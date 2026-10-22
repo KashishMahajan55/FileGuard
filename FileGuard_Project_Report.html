@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FileGuard — Project Report v4.0</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #1f2328;
+    background: #ffffff;
+    padding: 2rem 1rem;
+  }
+  .page { max-width: 760px; margin: 0 auto; }
+
+  .cover {
+    background: #f7f8fa;
+    border: 1px solid #e5e7eb;
+    border-left: 5px solid #3b82d4;
+    border-radius: 8px;
+    padding: 2rem 2.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .cover h1 { font-size: 1.6rem; color: #1f2328; margin-bottom: 0.3rem; }
+  .cover .subtitle { font-size: 0.95rem; color: #57606a; margin-bottom: 1.5rem; }
+  .cover table { width: 100%; border-collapse: collapse; }
+  .cover td { padding: 0.35rem 0.6rem; font-size: 0.88rem; border-bottom: 1px solid #e5e7eb; color: #1f2328; }
+  .cover td:first-child { color: #57606a; font-weight: 600; width: 38%; }
+
+  .toc { background: #f7f8fa; border: 1px solid #e5e7eb; border-radius: 8px; padding: 1.4rem 2rem; margin-bottom: 2.5rem; }
+  .toc h2 { font-size: 1rem; color: #1f2328; margin-bottom: 0.8rem; }
+  .toc ol { padding-left: 1.4rem; }
+  .toc li { font-size: 0.88rem; padding: 0.18rem 0; }
+  .toc li a { color: #3b82d4; text-decoration: none; }
+  .toc li a:hover { text-decoration: underline; }
+
+  h2.section { font-size: 1.2rem; color: #1f2328; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.4rem; margin: 2.5rem 0 1rem; }
+  h3.sub { font-size: 1rem; color: #1f2328; margin: 1.4rem 0 0.5rem; }
+  h4.subsub { font-size: 0.9rem; color: #57606a; margin: 1rem 0 0.4rem; font-weight: 600; }
+
+  p { color: #1f2328; margin-bottom: 0.8rem; }
+  ul, ol { padding-left: 1.5rem; margin-bottom: 0.8rem; }
+  li { color: #1f2328; margin-bottom: 0.25rem; }
+  strong { color: #1f2328; }
+  em { color: #57606a; }
+
+  code { background: #f7f8fa; border: 1px solid #e5e7eb; padding: 0.1em 0.35em; border-radius: 3px; font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; font-size: 0.82em; color: #1f2328; }
+  pre { background: #f7f8fa; border: 1px solid #e5e7eb; border-left: 4px solid #3b82d4; border-radius: 6px; padding: 1rem 1.2rem; overflow-x: auto; margin: 0.8rem 0 1rem; font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; font-size: 0.82rem; line-height: 1.6; color: #1f2328; }
+  pre code { background: none; border: none; padding: 0; font-size: inherit; }
+
+  table { width: 100%; border-collapse: collapse; margin: 0.8rem 0 1.2rem; font-size: 0.87rem; }
+  th { background: #f7f8fa; border: 1px solid #e5e7eb; padding: 0.5rem 0.7rem; text-align: left; font-weight: 600; color: #1f2328; }
+  td { border: 1px solid #e5e7eb; padding: 0.45rem 0.7rem; color: #1f2328; vertical-align: top; }
+  tr:nth-child(even) td { background: #f7f8fa; }
+
+  .note { background: #f0f6ff; border: 1px solid #bfdbfe; border-left: 4px solid #3b82d4; border-radius: 6px; padding: 0.8rem 1.1rem; font-size: 0.88rem; color: #1e3a5f; margin: 0.8rem 0; }
+  .warn { background: #fffbeb; border: 1px solid #fcd34d; border-left: 4px solid #f59e0b; border-radius: 6px; padding: 0.8rem 1.1rem; font-size: 0.88rem; color: #78350f; margin: 0.8rem 0; }
+  .result-box { background: #f0fdf4; border: 1px solid #86efac; border-left: 4px solid #22c55e; border-radius: 6px; padding: 0.8rem 1.2rem; font-size: 0.88rem; color: #14532d; margin: 0.8rem 0; }
+  .result-box pre { background: none; border: none; padding: 0; margin: 0.5rem 0 0; color: #14532d; font-size: 0.82rem; }
+
+  .badge { display: inline-block; background: #22c55e; color: #fff; font-size: 0.72rem; font-weight: 700; padding: 0.15rem 0.55rem; border-radius: 50px; letter-spacing: 0.05em; text-transform: uppercase; margin-left: 0.4rem; vertical-align: middle; }
+
+  .abstract { background: #f7f8fa; border: 1px solid #e5e7eb; border-radius: 8px; padding: 1.2rem 1.6rem; margin-bottom: 1.5rem; font-size: 0.92rem; color: #1f2328; line-height: 1.75; }
+
+  hr { border: none; border-top: 1px solid #e5e7eb; margin: 2rem 0; }
+
+  .footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #e5e7eb; text-align: center; font-size: 0.75rem; color: #57606a; }
+
+  @media print {
+    body { padding: 0; font-size: 12px; }
+    .page { max-width: 100%; }
+    pre { white-space: pre-wrap; word-break: break-all; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- COVER -->
+  <div class="cover">
+    <h1>&#128737;&#65039; FileGuard</h1>
+    <p class="subtitle">Digital File Integrity &amp; Tampering Detector &mdash; Project Report</p>
+    <table>
+      <tr><td>Project Title</td><td>FileGuard &mdash; Digital File Integrity &amp; Tampering Detector</td></tr>
+      <tr><td>Student Name</td><td>Kashish</td></tr>
+      <tr><td>Course</td><td>B.Tech Computer Science and Engineering</td></tr>
+      <tr><td>Subject</td><td>Cybersecurity / Information Security</td></tr>
+      <tr><td>Version</td><td>4.0</td></tr>
+    </table>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <h2>Table of Contents</h2>
+    <ol>
+      <li><a href="#abstract">Abstract</a></li>
+      <li><a href="#s1">Introduction</a></li>
+      <li><a href="#s2">Problem Statement</a></li>
+      <li><a href="#s3">Objectives</a></li>
+      <li><a href="#s4">Scope of the Project</a></li>
+      <li><a href="#s5">Existing Approach and Proposed Solution</a></li>
+      <li><a href="#s6">Software and Hardware Requirements</a></li>
+      <li><a href="#s7">Technologies Used</a></li>
+      <li><a href="#s8">System Design and Working Methodology</a></li>
+      <li><a href="#s9">SHA-256 Hashing Explanation</a></li>
+      <li><a href="#s10">Implementation and Description of the Four Project Files</a></li>
+      <li><a href="#s11">Main Features</a></li>
+      <li><a href="#s12">Testing Plan</a></li>
+      <li><a href="#s13">Results and Discussion</a></li>
+      <li><a href="#s14">Advantages</a></li>
+      <li><a href="#s15">Limitations</a></li>
+      <li><a href="#s16">Future Enhancements</a></li>
+      <li><a href="#s17">Conclusion</a></li>
+      <li><a href="#s18">References</a></li>
+    </ol>
+  </div>
+
+  <!-- ABSTRACT -->
+  <h2 class="section" id="abstract">Abstract</h2>
+  <div class="abstract">
+    FileGuard is a browser-based file integrity verification tool built with Python and Streamlit. It computes the SHA-256 cryptographic hash of any uploaded file, allows the user to record that hash as a trusted reference, and compares a file&rsquo;s current hash against the reference at any later time to determine whether the file has been changed.<br><br>
+    The application runs entirely on the user&rsquo;s local machine. No file content, hash, or metadata is transmitted to any external server. Files are never written to disk and are never executed.<br><br>
+    The tool addresses a practical gap: existing hash verification utilities are either command-line tools unfamiliar to beginners or heavyweight enterprise systems. FileGuard provides the same underlying verification method &mdash; SHA-256 comparison &mdash; through a clean, step-by-step browser interface that requires no technical background to operate.<br><br>
+    Key capabilities include SHA-256 hash computation, original reference recording, structured JSON export and import for cross-session verification, side-by-side hash comparison, colour-coded pass/fail verdicts, and a downloadable plain-text verification report.
+  </div>
+
+  <!-- S1 -->
+  <h2 class="section" id="s1">1. Introduction</h2>
+  <h3 class="sub">1.1 Background</h3>
+  <p>Digital files are the primary medium through which information is created, shared, and stored. A document, a software installer, a database export, or a configuration file may pass through email servers, cloud storage platforms, USB drives, and network file shares before reaching its intended recipient. At every step, the file is vulnerable to unintended or malicious modification.</p>
+  <p>Traditional antivirus software detects known malware signatures, but it does not answer a simpler, equally important question: <em>&ldquo;Is this the exact file I originally had?&rdquo;</em> Cryptographic hash functions provide a mathematically precise answer to that question.</p>
+  <h3 class="sub">1.2 Motivation</h3>
+  <p>A first-year engineering or cybersecurity student typically learns about SHA-256 from textbooks but has no accessible tool to interact with it hands-on without using a terminal command. FileGuard was developed to bridge that gap &mdash; to make a real security primitive usable by anyone with a browser.</p>
+  <h3 class="sub">1.3 Document Structure</h3>
+  <p>This report is organised as follows. Section 2 states the problem. Section 3 sets the objectives. Section 4 defines the scope. Section 5 reviews the existing approach and the proposed solution. Sections 6 and 7 cover requirements and technologies. Sections 8 and 9 present the system design and SHA-256 explanation. Section 10 describes the implementation of each project file. Section 11 lists all features. Section 12 contains the testing plan. Section 13 discusses results. Sections 14 through 17 cover advantages, limitations, future work, and the conclusion. References are listed at the end.</p>
+
+  <!-- S2 -->
+  <h2 class="section" id="s2">2. Problem Statement</h2>
+  <p>Files shared over networks, stored in cloud drives, or passed between systems are vulnerable to silent modification. Causes include:</p>
+  <ul>
+    <li><strong>Transmission errors</strong> during network transfer or storage media degradation.</li>
+    <li><strong>Software bugs</strong> in editors, converters, or synchronisation tools.</li>
+    <li><strong>Deliberate tampering</strong> by an attacker who has access to the file at any point in its journey.</li>
+  </ul>
+  <p>Without an independent integrity check, there is no reliable way to confirm that the copy of a file you have today is byte-for-byte identical to the version that was originally created or distributed.</p>
+  <p>Existing tools fall into two categories:</p>
+  <ol>
+    <li><strong>Command-line utilities</strong> (<code>sha256sum</code> on Linux/macOS, <code>certutil -hashfile</code> on Windows) &mdash; effective but inaccessible to users who are not comfortable with terminals.</li>
+    <li><strong>Enterprise FIM tools</strong> (Tripwire, AIDE, osquery) &mdash; powerful but complex, requiring installation, configuration, and system-level access.</li>
+  </ol>
+  <p>There is no lightweight, beginner-friendly, browser-based tool that covers the complete workflow: compute a hash, save it as a reference, and verify a file against that reference in a later session.</p>
+
+  <!-- S3 -->
+  <h2 class="section" id="s3">3. Objectives</h2>
+  <ol>
+    <li>Compute the SHA-256 hash of any uploaded file entirely within the user&rsquo;s browser session, without transmitting file contents to any server.</li>
+    <li>Allow the user to record a computed hash as a trusted original reference, with a UTC timestamp and the original filename.</li>
+    <li>Export the recorded reference as a structured JSON file that can be stored securely and used in a future session.</li>
+    <li>Import a previously exported JSON record and validate its structure and SHA-256 format before using it as a reference.</li>
+    <li>Compare the current hash of a file against the active reference and display a clear, colour-coded pass/fail verdict.</li>
+    <li>Show both hashes side-by-side in selectable text areas so the user can inspect them directly.</li>
+    <li>Generate a downloadable plain-text verification report containing the filenames, both hashes, the verification timestamp, and the result.</li>
+    <li>Explain the meaning and limitations of hash-based verification in plain language within the application itself.</li>
+    <li>Enforce safety controls: size limits, no file execution, no permanent storage, and honest messaging about what a hash match does and does not guarantee.</li>
+  </ol>
+
+  <!-- S4 -->
+  <h2 class="section" id="s4">4. Scope of the Project</h2>
+  <h3 class="sub">In Scope</h3>
+  <ul>
+    <li>SHA-256 hash computation for any file up to 10 MB in size.</li>
+    <li>Recording a reference hash in the current browser session.</li>
+    <li>Exporting and importing a structured JSON verification record.</li>
+    <li>Comparing a file&rsquo;s current hash against a reference hash.</li>
+    <li>Displaying a verdict, a side-by-side hash comparison, and a plain-text report.</li>
+    <li>Running entirely on the user&rsquo;s local machine with no network communication.</li>
+    <li>Supporting any operating system that can run Python 3.9 and a modern web browser.</li>
+  </ul>
+  <h3 class="sub">Out of Scope</h3>
+  <ul>
+    <li>Antivirus scanning, malware detection, or any analysis of file contents beyond hashing.</li>
+    <li>Permanent storage of files, hashes, or user data of any kind.</li>
+    <li>Multi-user or networked deployment.</li>
+    <li>Automated or scheduled integrity monitoring.</li>
+    <li>PDF report generation (identified as a future enhancement).</li>
+    <li>Verification of more than one file at a time in a single session.</li>
+  </ul>
+
+  <!-- S5 -->
+  <h2 class="section" id="s5">5. Existing Approach and Proposed Solution</h2>
+  <h3 class="sub">5.1 Existing Approach</h3>
+  <p>The standard method for manual file integrity verification is to use a command-line tool:</p>
+  <pre><code># Linux / macOS
+sha256sum report.pdf
+
+# Windows
+certutil -hashfile report.pdf SHA256</code></pre>
+  <p>This approach requires the user to open a terminal, type a command with exact syntax, copy and save the output manually, re-run the command later, and compare two strings by eye. For a student or non-technical user, this workflow is a barrier.</p>
+  <h3 class="sub">5.2 Proposed Solution</h3>
+  <p>FileGuard wraps the same underlying primitive &mdash; SHA-256 via Python&rsquo;s <code>hashlib</code> &mdash; in a browser interface that guides the user through each step:</p>
+  <ol>
+    <li><strong>Step 1:</strong> Upload a file, see the hash, click one button to record it.</li>
+    <li><strong>Export:</strong> Download the reference as a JSON file for safe keeping.</li>
+    <li><strong>Step 2:</strong> Upload the file again (or load the saved record), see both hashes side-by-side, and receive an immediate verdict.</li>
+  </ol>
+
+  <!-- S6 -->
+  <h2 class="section" id="s6">6. Software and Hardware Requirements</h2>
+  <h3 class="sub">6.1 Software Requirements</h3>
+  <table>
+    <tr><th>Component</th><th>Requirement</th></tr>
+    <tr><td>Operating system</td><td>Windows 10+, macOS 11+, or any modern Linux distribution</td></tr>
+    <tr><td>Python</td><td>Version 3.9 or newer</td></tr>
+    <tr><td>pip</td><td>Bundled with Python; used to install Streamlit</td></tr>
+    <tr><td>Streamlit</td><td>Version 1.32.0 or newer (installed via <code>requirements.txt</code>)</td></tr>
+    <tr><td>Web browser</td><td>Chrome, Firefox, Edge, or Safari (any modern browser)</td></tr>
+  </table>
+  <div class="note"><strong>Note on Python version:</strong> The code uses the walrus operator (<code>:=</code>) introduced in Python 3.8, and lowercase built-in generics in type annotations (e.g. <code>tuple[bool, str]</code>) introduced in Python 3.9. Python 3.9 is therefore the minimum compatible version.</div>
+  <h3 class="sub">6.2 Hardware Requirements</h3>
+  <table>
+    <tr><th>Component</th><th>Minimum</th></tr>
+    <tr><td>Processor</td><td>Any processor capable of running Python 3.9</td></tr>
+    <tr><td>RAM</td><td>256 MB available to the Python process</td></tr>
+    <tr><td>Disk space</td><td>Approximately 200 MB for Python, Streamlit, and their dependencies</td></tr>
+    <tr><td>Network</td><td>Not required; the application runs entirely offline</td></tr>
+  </table>
+
+  <!-- S7 -->
+  <h2 class="section" id="s7">7. Technologies Used</h2>
+  <h3 class="sub">7.1 Python 3.9</h3>
+  <p>Python is the implementation language. It was chosen for its readable syntax, extensive standard library, and widespread use in cybersecurity education. No compiled or low-level code is required.</p>
+  <h3 class="sub">7.2 Streamlit (&ge; 1.32.0)</h3>
+  <p>Streamlit converts a regular Python script into an interactive web application. FileGuard uses: <code>st.file_uploader</code>, <code>st.text_area</code>, <code>st.metric</code>, <code>st.columns</code>, <code>st.download_button</code>, <code>st.session_state</code>, <code>st.expander</code>, and <code>st.sidebar</code>.</p>
+  <h3 class="sub">7.3 hashlib (Python standard library)</h3>
+  <p><code>hashlib</code> provides <code>hashlib.sha256()</code>, which produces a 256-bit digest as a 64-character lowercase hexadecimal string. No installation required.</p>
+  <h3 class="sub">7.4 Other Standard Library Modules</h3>
+  <table>
+    <tr><th>Module</th><th>Purpose in this project</th></tr>
+    <tr><td><code>io</code></td><td>Wraps raw bytes in a <code>BytesIO</code> stream for chunked reading</td></tr>
+    <tr><td><code>json</code></td><td>Serialises and parses the verification record</td></tr>
+    <tr><td><code>re</code></td><td>Validates that a SHA-256 field is exactly 64 lowercase hex characters</td></tr>
+    <tr><td><code>datetime</code></td><td>Generates UTC timestamps for record creation and verification events</td></tr>
+  </table>
+
+  <!-- S8 -->
+  <h2 class="section" id="s8">8. System Design and Working Methodology</h2>
+  <h3 class="sub">8.1 Architecture Overview</h3>
+  <pre><code>+-----------------------------------------------------+
+|                   User's Browser                    |
+|   Streamlit front-end (rendered from app.py)        |
+|   +--------------+      +-----------------------+   |
+|   |   Step 1     |      |        Step 2         |   |
+|   |  (Record)    |      |  (Verify / Compare)   |   |
+|   +------+-------+      +----------+------------+   |
++----------+---------------------------+---------------+
+           |                           |
+           v                           v
++-----------------------------------------------------+
+|              Python process  (app.py)               |
+|   compute_sha256()  &lt;-  hashlib.sha256()            |
+|   validate_record() &lt;-  re.fullmatch()              |
+|   build_record()    -&gt;  json.dumps()                |
+|   build_verification_report() -&gt; plain text string  |
+|   st.session_state  &lt;-  hash, filename, timestamp   |
++-----------------------------------------------------+</code></pre>
+  <p>All components run in a single Python process on the user&rsquo;s machine. No database connections, no external API calls, no file system writes.</p>
+  <h3 class="sub">8.2 Data Flow &mdash; Recording a Reference Hash</h3>
+  <ol>
+    <li>User selects a file via <code>st.file_uploader</code> in Step 1.</li>
+    <li>Streamlit reads the file into memory as a bytes object.</li>
+    <li>Size is checked: if it exceeds 10 MB or is zero, an error is shown and processing stops.</li>
+    <li><code>compute_sha256()</code> reads the bytes in 64 KB chunks and returns the 64-character hex digest.</li>
+    <li>The hash is displayed in a <code>st.text_area</code> widget.</li>
+    <li>Clicking &ldquo;Record as original reference&rdquo; saves the hash, filename, and UTC timestamp to <code>st.session_state</code>.</li>
+    <li>The sidebar updates immediately to show the active reference.</li>
+  </ol>
+  <h3 class="sub">8.3 Data Flow &mdash; JSON Export</h3>
+  <ol>
+    <li>User expands the &ldquo;Active reference hash&rdquo; panel and clicks the download button.</li>
+    <li><code>build_record()</code> assembles a Python dictionary with schema version, tool name, filename, hash, and timestamp.</li>
+    <li><code>json.dumps()</code> serialises it; <code>st.download_button</code> offers it as a <code>.json</code> file download.</li>
+  </ol>
+  <h3 class="sub">8.4 Data Flow &mdash; Verification</h3>
+  <ol>
+    <li>User optionally uploads a saved <code>.json</code> record in Step 2 Option A (parsed with <code>json.loads()</code>, never executed).</li>
+    <li><code>validate_record()</code> checks required fields, the <code>&quot;tool&quot;</code> sentinel, and SHA-256 format.</li>
+    <li>If no JSON record is uploaded, the session-state reference from Step 1 is used.</li>
+    <li>User uploads the file to verify in Option B; <code>compute_sha256()</code> computes its current hash.</li>
+    <li>The two hashes are compared with string equality (<code>==</code>).</li>
+    <li>A colour-coded verdict banner is shown. Both hashes are displayed side-by-side.</li>
+    <li><code>build_verification_report()</code> assembles a plain-text report offered via <code>st.download_button</code>.</li>
+  </ol>
+  <h3 class="sub">8.5 Session State Management</h3>
+  <table>
+    <tr><th>Key</th><th>Type</th><th>Content</th></tr>
+    <tr><td><code>recorded_hash</code></td><td><code>str</code> or <code>None</code></td><td>64-character SHA-256 hex digest</td></tr>
+    <tr><td><code>recorded_filename</code></td><td><code>str</code> or <code>None</code></td><td>Name of the file when the hash was recorded</td></tr>
+    <tr><td><code>recorded_at</code></td><td><code>str</code> or <code>None</code></td><td>UTC timestamp in ISO 8601 format</td></tr>
+  </table>
+  <h3 class="sub">8.6 Security Controls</h3>
+  <table>
+    <tr><th>Threat</th><th>Control implemented in the code</th></tr>
+    <tr><td>Uploaded file executed</td><td>Files are only read with <code>.read()</code> into <code>bytes</code>; no <code>exec</code>, <code>subprocess</code>, or shell call anywhere in <code>app.py</code></td></tr>
+    <tr><td>Data exfiltration</td><td>Streamlit runs on <code>localhost</code>; no HTTP requests to external services</td></tr>
+    <tr><td>Oversized file</td><td><code>MAX_FILE_SIZE_BYTES</code> (10 MB) checked before <code>compute_sha256()</code> is called</td></tr>
+    <tr><td>Empty file</td><td><code>size == 0</code> checked before hashing</td></tr>
+    <tr><td>Crafted JSON record</td><td><code>validate_record()</code> checks required keys, tool sentinel, and 64-char hex format</td></tr>
+    <tr><td>Hash match falsely implying safety</td><td>UI explicitly states a match confirms byte-for-byte identity only, not absence of malware</td></tr>
+    <tr><td>Record tampering</td><td>Trust-reminder panel explains the record is only reliable if it has been protected</td></tr>
+  </table>
+
+  <!-- S9 -->
+  <h2 class="section" id="s9">9. SHA-256 Hashing Explanation</h2>
+  <h3 class="sub">9.1 What SHA-256 Is</h3>
+  <p>SHA-256 (Secure Hash Algorithm, 256-bit output) is a member of the SHA-2 family standardised by NIST in FIPS PUB 180-4. It takes an input of arbitrary length and produces a fixed 256-bit (32-byte) output written as a 64-character lowercase hexadecimal string.</p>
+  <h3 class="sub">9.2 Key Properties</h3>
+  <ul>
+    <li><strong>Deterministic.</strong> The same bytes always produce the same hash.</li>
+    <li><strong>Avalanche effect.</strong> A single bit change produces a completely different hash.</li>
+    <li><strong>Pre-image resistance.</strong> A hash cannot be reversed to recover the original file.</li>
+    <li><strong>Collision resistance.</strong> It is computationally infeasible to find two different files with the same hash.</li>
+  </ul>
+  <h3 class="sub">9.3 How FileGuard Uses SHA-256</h3>
+  <pre><code>def compute_sha256(file_bytes: bytes) -&gt; str:
+    h = hashlib.sha256()
+    stream = io.BytesIO(file_bytes)
+    while chunk := stream.read(65536):   # 64 KB chunks
+        h.update(chunk)
+    return h.hexdigest()</code></pre>
+  <h3 class="sub">9.4 Example &mdash; Avalanche Effect</h3>
+  <pre><code>Input: "Hello, World!"
+SHA-256: dffd6021bb2bd5b0af676290809ec3a53191dd81c7f70a4b28688a362182986f
+
+Input: "Hello, World?"   (only last character changed)
+SHA-256: f16c3bb0532537acd5b2e418f2b1235b29181e35cffee7cc29d84de4a1d62e4d</code></pre>
+  <p>Every single character of the hash is different despite only one character changing in the input &mdash; this is the avalanche effect.</p>
+  <h3 class="sub">9.5 What a Hash Match and Mismatch Each Mean</h3>
+  <p><strong>Match:</strong> Every byte of the file is identical to the original reference. The file has not been altered, corrupted, or substituted.</p>
+  <p><strong>Mismatch:</strong> The file&rsquo;s byte content differs. Possible causes: intentional edit, accidental corruption, wrong version uploaded, or malicious tampering. A mismatch does not by itself identify the cause.</p>
+  <div class="warn"><strong>Important:</strong> A hash match confirms identity only &mdash; not that the file is free of malware. FileGuard is not an antivirus tool.</div>
+
+  <!-- S10 -->
+  <h2 class="section" id="s10">10. Implementation and Description of the Four Project Files</h2>
+  <h3 class="sub">10.1 <code>app.py</code> &mdash; Main Application (v4.0)</h3>
+  <h4 class="subsub">Imports and Constants</h4>
+  <pre><code>import hashlib, io, json, re
+from datetime import datetime, timezone
+import streamlit as st
+
+MAX_FILE_SIZE_MB    = 10
+MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
+RECORD_SCHEMA_VERSION = "1"</code></pre>
+  <p>Only <code>streamlit</code> is an external package. All other imports are Python standard library.</p>
+  <h4 class="subsub">Helper Functions</h4>
+  <table>
+    <tr><th>Function</th><th>Signature</th><th>Purpose</th></tr>
+    <tr><td><code>compute_sha256</code></td><td><code>(bytes) &rarr; str</code></td><td>64-char SHA-256 hex digest via 64 KB chunked reads</td></tr>
+    <tr><td><code>format_file_size</code></td><td><code>(int) &rarr; str</code></td><td>Human-readable B / KB / MB string</td></tr>
+    <tr><td><code>is_valid_sha256</code></td><td><code>(str) &rarr; bool</code></td><td><code>True</code> only if input matches <code>[0-9a-f]{64}</code></td></tr>
+    <tr><td><code>build_record</code></td><td><code>(str, str, str) &rarr; dict</code></td><td>Assembles the JSON record dictionary</td></tr>
+    <tr><td><code>validate_record</code></td><td><code>(dict) &rarr; tuple[bool, str]</code></td><td>Checks fields, tool sentinel, and hash format</td></tr>
+    <tr><td><code>now_utc</code></td><td><code>() &rarr; str</code></td><td>Current UTC time as ISO 8601 string</td></tr>
+    <tr><td><code>build_verification_report</code></td><td><code>(...) &rarr; str</code></td><td>Assembles the plain-text verification report</td></tr>
+    <tr><td><code>render_hash_diff</code></td><td><code>(str, str) &rarr; str</code></td><td>HTML showing the current hash with differing characters in red</td></tr>
+  </table>
+  <h4 class="subsub">Built-in Self-Test Suite</h4>
+  <p><code>app.py</code> contains a 70-test self-test suite inside an <code>if __name__ == &quot;__main__&quot;:</code> block. Run with <code>python app.py</code>.</p>
+  <h3 class="sub">10.2 <code>requirements.txt</code></h3>
+  <pre><code>streamlit&gt;=1.32.0</code></pre>
+  <p>Streamlit is the only external dependency. All other imports are Python standard library.</p>
+  <h3 class="sub">10.3 <code>README.md</code></h3>
+  <p>User-facing documentation: project description, objectives, feature table, technologies used, project structure, prerequisites, installation instructions for Windows/macOS/Linux, usage guide for both workflow paths, SHA-256 explanation, safety considerations, testing scenarios, and future enhancements.</p>
+  <h3 class="sub">10.4 <code>PROJECT_REPORT.md</code></h3>
+  <p>This file. A complete college-style project report covering all 18 sections from problem statement through to references.</p>
+
+  <!-- S11 -->
+  <h2 class="section" id="s11">11. Main Features</h2>
+  <table>
+    <tr><th>#</th><th>Feature</th><th>Description</th></tr>
+    <tr><td>11.1</td><td>SHA-256 Hash Computation</td><td>Any file up to 10 MB hashed via <code>hashlib.sha256()</code> in 64 KB chunks; result in a selectable text area</td></tr>
+    <tr><td>11.2</td><td>Original Reference Recording</td><td>&ldquo;Record as original reference&rdquo; button saves hash, filename, and UTC timestamp to <code>st.session_state</code></td></tr>
+    <tr><td>11.3</td><td>JSON Verification Record Export</td><td>Download reference as a structured <code>.json</code> file from the reference expander</td></tr>
+    <tr><td>11.4</td><td>JSON Record Import and Validation</td><td>Upload a <code>.json</code> record in Step 2 Option A; structure and hash format validated before use</td></tr>
+    <tr><td>11.5</td><td>File Verification and Verdict</td><td>Teal &ldquo;&#10003; File Unchanged&rdquo; banner on match; red &ldquo;&#9888; File Modified&rdquo; banner on mismatch</td></tr>
+    <tr><td>11.6</td><td>Side-by-Side Hash Comparison &amp; Diff</td><td>Both hashes shown side-by-side; on mismatch, differing characters highlighted in red</td></tr>
+    <tr><td>11.7</td><td>Verification Report Download</td><td>Plain-text <code>.txt</code> report with filenames, both hashes, UTC timestamp, and result</td></tr>
+    <tr><td>11.8</td><td>Live Sidebar Dashboard</td><td>Always-visible panel showing workflow overview and current session reference status</td></tr>
+    <tr><td>11.9</td><td>Safety Explanations</td><td>Plain-language explanation after every result; mismatch causes listed; trust-reminder panel shown</td></tr>
+    <tr><td>11.10</td><td>Visual Step-Progress Tracker</td><td>Pill-row beneath header updating live as the session advances</td></tr>
+    <tr><td>11.11</td><td>Two-Column Verify Layout</td><td>Option A (JSON record) and Option B (file to verify) shown side-by-side</td></tr>
+  </table>
+
+  <!-- S12 -->
+  <h2 class="section" id="s12">12. Testing Plan</h2>
+  <h3 class="sub">12.1 Automated Unit Tests &mdash; Executed <span class="badge">70 / 70 PASS</span></h3>
+  <table>
+    <tr><th>Function under test</th><th>Tests</th></tr>
+    <tr><td><code>compute_sha256</code></td><td>Known digest, determinism, empty input, avalanche effect, output length, output charset, 1 MB chunked input, cross-check against <code>hashlib</code></td></tr>
+    <tr><td><code>format_file_size</code></td><td>Eight boundary cases from 0 B through 10 MB</td></tr>
+    <tr><td><code>is_valid_sha256</code></td><td>Five valid cases, eight invalid cases (None, wrong length, uppercase, non-hex, embedded space)</td></tr>
+    <tr><td><code>validate_record</code></td><td>Well-formed record accepted; each of five required fields tested for absence; wrong tool name; six invalid SHA-256 formats</td></tr>
+    <tr><td><code>build_record</code></td><td>All five fields preserved; output passes <code>validate_record</code>; JSON round-trip</td></tr>
+    <tr><td><code>build_verification_report</code></td><td>UNCHANGED and MODIFIED reports checked for required content and safety note</td></tr>
+    <tr><td>Size-limit arithmetic</td><td>Four boundary checks around the 10 MB limit</td></tr>
+  </table>
+  <div class="result-box">
+    <strong>Confirmed result (executed during code review):</strong>
+    <pre>============================================================
+  70 passed  /  0 failed  /  70 total
+============================================================</pre>
+  </div>
+  <h3 class="sub">12.2 Planned Manual Tests</h3>
+  <table>
+    <tr><th>TC #</th><th>Category</th><th>Input</th><th>Expected Result</th></tr>
+    <tr><td>TC-01</td><td>Hash computation</td><td>A plain text file</td><td>64-character hex digest displayed; success banner appears</td></tr>
+    <tr><td>TC-02</td><td>Determinism</td><td>Same file uploaded twice</td><td>Both hash displays show the identical string</td></tr>
+    <tr><td>TC-03</td><td>Avalanche effect</td><td>File; then same file with one character changed</td><td>Completely different hashes; red verdict banner</td></tr>
+    <tr><td>TC-04</td><td>File unchanged</td><td>Any file, uploaded twice</td><td>Green &ldquo;File Unchanged&rdquo; banner</td></tr>
+    <tr><td>TC-05</td><td>File modified</td><td>Any text file (edit one character)</td><td>Red &ldquo;File Modified&rdquo; banner; diff highlights differences</td></tr>
+    <tr><td>TC-06</td><td>Oversized file</td><td>File larger than 10 MB</td><td>Red error message; no hash computed</td></tr>
+    <tr><td>TC-07</td><td>Empty file</td><td>A 0-byte file</td><td>Yellow warning message; no hash computed</td></tr>
+    <tr><td>TC-08</td><td>JSON export</td><td>Any file with a recorded hash</td><td><code>.json</code> file downloaded containing all five required fields</td></tr>
+    <tr><td>TC-09</td><td>JSON import &mdash; valid</td><td>The <code>.json</code> file from TC-08</td><td>Green success message with original filename and timestamp</td></tr>
+    <tr><td>TC-10</td><td>JSON import &mdash; missing fields</td><td><code>{ "hello": "world" }</code> renamed <code>.json</code></td><td>Red error listing missing required fields</td></tr>
+    <tr><td>TC-11</td><td>JSON import &mdash; wrong tool</td><td>Valid structure but <code>"tool": "OtherApp"</code></td><td>Red error: &ldquo;Record was not created by FileGuard.&rdquo;</td></tr>
+    <tr><td>TC-12</td><td>JSON import &mdash; invalid hash</td><td>Valid structure but <code>"sha256": "not-a-hash"</code></td><td>Red error: sha256 field is not a valid hex digest</td></tr>
+    <tr><td>TC-13</td><td>JSON import &mdash; not valid JSON</td><td>A plain text file renamed <code>.json</code></td><td>Red error: file could not be parsed as JSON</td></tr>
+    <tr><td>TC-14</td><td>Verify without reference</td><td>Upload file with no session reference and no JSON</td><td>Yellow warning: no reference hash available</td></tr>
+    <tr><td>TC-15</td><td>Cross-session verification</td><td>Record, export, refresh, import JSON, upload file</td><td>Verification succeeds using the imported record</td></tr>
+    <tr><td>TC-16</td><td>Report &mdash; match</td><td>Complete TC-04</td><td><code>.txt</code> report contains both hashes, timestamp, and &ldquo;UNCHANGED&rdquo;</td></tr>
+    <tr><td>TC-17</td><td>Report &mdash; mismatch</td><td>Complete TC-05</td><td><code>.txt</code> report contains both hashes, timestamp, and &ldquo;MODIFIED&rdquo;</td></tr>
+    <tr><td>TC-18</td><td>Clear recorded hash</td><td>Record a hash; click &ldquo;Clear&rdquo;</td><td>Sidebar switches to &ldquo;No reference yet&rdquo; pill</td></tr>
+    <tr><td>TC-19</td><td>Step tracker updates</td><td>Record a hash in Step 1</td><td>Step 1 pill turns green; Step 2 becomes active</td></tr>
+    <tr><td>TC-20</td><td>File type independence</td><td>An image, a PDF, and an executable</td><td>A valid 64-character hash displayed for each</td></tr>
+  </table>
+
+  <!-- S13 -->
+  <h2 class="section" id="s13">13. Results and Discussion</h2>
+  <h3 class="sub">13.1 Features Implemented</h3>
+  <p>All nine objectives stated in Section 3 have been implemented in the current version of <code>app.py</code>.</p>
+  <table>
+    <tr><th>Objective</th><th>Implemented as</th></tr>
+    <tr><td>Compute SHA-256 hash locally</td><td><code>compute_sha256()</code> using <code>hashlib.sha256()</code> with 64 KB chunked reads</td></tr>
+    <tr><td>Record original reference</td><td>&ldquo;Record as original reference&rdquo; button writing to <code>st.session_state</code></td></tr>
+    <tr><td>Export as JSON</td><td><code>build_record()</code> + <code>st.download_button</code> in the reference expander</td></tr>
+    <tr><td>Import and validate JSON</td><td><code>json.loads()</code> + <code>validate_record()</code> in Step 2 Option A</td></tr>
+    <tr><td>Compare and display verdict</td><td>String equality check + colour-coded verdict banner</td></tr>
+    <tr><td>Side-by-side hash display</td><td>Two <code>st.text_area</code> widgets in <code>st.columns(2)</code></td></tr>
+    <tr><td>Downloadable report</td><td><code>build_verification_report()</code> + <code>st.download_button</code></td></tr>
+    <tr><td>Plain-language explanation</td><td><code>info-panel</code> divs shown conditionally after each verdict</td></tr>
+    <tr><td>Safety controls</td><td>Size limit, empty check, no-exec policy, schema validation, honest messaging</td></tr>
+  </table>
+  <h3 class="sub">13.2 Observed Design Outcomes</h3>
+  <ul>
+    <li><strong>Selectable text areas</strong> make it easy to copy a hash without browser developer tools.</li>
+    <li><strong>Two-column hash comparison</strong> places original and current hash directly beside each other.</li>
+    <li><strong>Character-level hash diff</strong> highlights exact differing positions in red.</li>
+    <li><strong>Visual step-progress tracker</strong> updates live as the session advances.</li>
+    <li><strong>Live sidebar dashboard</strong> means the user does not need to scroll back to confirm the active reference.</li>
+  </ul>
+  <h3 class="sub">13.3 Limitations Observed During Development</h3>
+  <ul>
+    <li>Session state is lost on browser refresh if the JSON record was not exported.</li>
+    <li>Only one reference hash can be active per session at a time.</li>
+    <li>The 10 MB file size limit is enforced in Python; Streamlit&rsquo;s own server may impose a separate limit.</li>
+  </ul>
+
+  <!-- S14 -->
+  <h2 class="section" id="s14">14. Advantages</h2>
+  <ol>
+    <li><strong>No installation complexity.</strong> Once Python and Streamlit are installed, the app starts with a single command.</li>
+    <li><strong>No external dependencies beyond Streamlit.</strong> All cryptographic logic uses Python&rsquo;s standard library.</li>
+    <li><strong>Completely local.</strong> No data ever leaves the user&rsquo;s machine &mdash; suitable for sensitive documents.</li>
+    <li><strong>Files are never executed.</strong> The application reads only raw bytes.</li>
+    <li><strong>Cross-session verification.</strong> The JSON export/import mechanism allows a hash recorded today to verify the same file weeks later.</li>
+    <li><strong>Honest about limitations.</strong> Explicitly states what SHA-256 verification does and does not prove.</li>
+    <li><strong>Educational value.</strong> The SHA-256 explainer and character-level diff teach hashing through direct interaction.</li>
+    <li><strong>Accessible to beginners.</strong> The entire workflow is two numbered steps; no terminal knowledge required.</li>
+  </ol>
+
+  <!-- S15 -->
+  <h2 class="section" id="s15">15. Limitations</h2>
+  <ol>
+    <li><strong>Single file per session.</strong> Only one reference hash can be recorded per session.</li>
+    <li><strong>Session volatility.</strong> Reference hash is lost on browser tab refresh if the JSON record was not exported.</li>
+    <li><strong>No pytest integration or CI pipeline.</strong> The built-in self-test suite must be run manually with <code>python app.py</code>.</li>
+    <li><strong>10 MB file size limit.</strong> Large files cannot be verified.</li>
+    <li><strong>SHA-256 only.</strong> MD5, SHA-1, and SHA-512 are not supported.</li>
+    <li><strong>No digital signature on the JSON record.</strong> If an attacker modifies both the file and the record, the comparison provides no guarantee.</li>
+    <li><strong>No verification history.</strong> Each comparison session starts fresh.</li>
+    <li><strong>Browser dependency.</strong> The application cannot run as a background service.</li>
+  </ol>
+
+  <!-- S16 -->
+  <h2 class="section" id="s16">16. Future Enhancements</h2>
+  <table>
+    <tr><th>Priority</th><th>Enhancement</th><th>Description</th></tr>
+    <tr><td>1</td><td>Verification history log</td><td>A table showing all files verified in the current session with their results</td></tr>
+    <tr><td>2</td><td>Multiple file comparison</td><td>Batch verification of multiple files against corresponding references</td></tr>
+    <tr><td>3</td><td>PDF report export</td><td>Formatted PDF report using <code>reportlab</code> or <code>fpdf2</code></td></tr>
+    <tr><td>4</td><td>Hash algorithm selection</td><td>SHA-256, SHA-512, or SHA-1 (with warnings about SHA-1&rsquo;s weaknesses)</td></tr>
+    <tr><td>5</td><td>Digital signature on JSON record</td><td>Sign the record with a private key using the <code>cryptography</code> library</td></tr>
+    <tr><td>6</td><td>pytest integration</td><td>Migrate the built-in self-test suite to <code>pytest</code> with CI configuration</td></tr>
+    <tr><td>7</td><td>Command-line companion</td><td>A <code>cli.py</code> script exposing the same workflow via <code>argparse</code></td></tr>
+    <tr><td>8</td><td>Drag-and-drop record detection</td><td>Automatically detect whether a dropped file is a JSON record or a file to verify</td></tr>
+  </table>
+
+  <!-- S17 -->
+  <h2 class="section" id="s17">17. Conclusion</h2>
+  <p>FileGuard demonstrates a practical application of cryptographic hashing to the real-world problem of file integrity verification. By wrapping Python&rsquo;s <code>hashlib.sha256()</code> in a Streamlit interface, the project makes a professional-grade security technique accessible to users with no terminal or cryptography background.</p>
+  <p>The application covers the complete verification workflow: hash a file, record the reference, export it for safe keeping, reload it in a future session, compare the current hash of the file, interpret the result, and download a report.</p>
+  <p>The codebase is intentionally minimal &mdash; four files, one external dependency &mdash; making it straightforward to understand, extend, and audit. The safety controls reflect sound principles: no file execution, no data transmission, enforced input limits, structured validation of imported data, and careful honesty about what the tool can and cannot guarantee.</p>
+  <p>This project demonstrates competence in Python programming, web application development with Streamlit, cryptographic concepts, input validation, session management, structured data exchange with JSON, and security-aware software design.</p>
+
+  <!-- S18 -->
+  <h2 class="section" id="s18">18. References</h2>
+  <ol>
+    <li>National Institute of Standards and Technology &mdash; <em>FIPS PUB 180-4: Secure Hash Standard (SHS)</em>, August 2015. https://csrc.nist.gov/publications/detail/fips/180/4/final</li>
+    <li>Python Software Foundation &mdash; <code>hashlib</code> &mdash; Secure hashes and message digests. https://docs.python.org/3/library/hashlib.html</li>
+    <li>Python Software Foundation &mdash; <code>io</code> &mdash; Core tools for working with streams. https://docs.python.org/3/library/io.html</li>
+    <li>Python Software Foundation &mdash; <code>json</code> &mdash; JSON encoder and decoder. https://docs.python.org/3/library/json.html</li>
+    <li>Python Software Foundation &mdash; <code>re</code> &mdash; Regular expression operations. https://docs.python.org/3/library/re.html</li>
+    <li>Python Software Foundation &mdash; <code>datetime</code> &mdash; Basic date and time types. https://docs.python.org/3/library/datetime.html</li>
+    <li>Streamlit Inc. &mdash; Streamlit API Reference. https://docs.streamlit.io/develop/api-reference</li>
+    <li>Streamlit Inc. &mdash; Session State documentation. https://docs.streamlit.io/develop/api-reference/caching-and-state/st.session_state</li>
+    <li>PCI Security Standards Council &mdash; <em>PCI DSS v4.0</em>, Requirement 11.5. https://www.pcisecuritystandards.org</li>
+    <li>Center for Internet Security &mdash; <em>CIS Controls v8</em>, Control 3. https://www.cisecurity.org/controls/v8</li>
+  </ol>
+
+  <hr>
+  <p style="text-align:center; color:#57606a; font-size:0.85rem; margin-top:1rem;"><em>End of Report &mdash; FileGuard v4.0 &mdash; Kashish</em></p>
+
+  <div class="footer">FileGuard Project Report &mdash; Generated by IBM Bob</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,7 @@
+# FileGuard – Python dependencies
+# Install with:  pip install -r requirements.txt
+#
+# All other imports used by app.py (hashlib, io, json, re, datetime) are
+# part of the Python standard library and do not need to be listed here.
+
+streamlit>=1.32.0
